@@ -4,33 +4,26 @@ public class TrainConsistManagementApp {
 
         public static void main(String[] args) {
             System.out.println("========================================");
-            System.out.print("UC4 - Maintain Ordered Bogie Consist\n");
+            System.out.println("UC5 - Preserve Insertion Order of Bogies");
             System.out.println("========================================");
-            List<String> trainConsist = new LinkedList<>();
 
-            trainConsist.add("Engine");
-            trainConsist.add("Sleeper");
-            trainConsist.add("AC");
-            trainConsist.add("Cargo");
-            trainConsist.add("Guard");
+            Set<String> formation = new LinkedHashSet<>();
+            formation.add("Engine");
+            formation.add("Sleeper");
+            formation.add("Cargo");
+            formation.add("Guard");
 
-            System.out.println("Initial Train Consist:");
-            System.out.println(trainConsist);
-            System.out.println();
-            trainConsist.add(2, "Pantry Car");
+            formation.add("Sleeper");
+            formation.add("Cargo");
 
-            System.out.println("After Inserting 'Pantry Car' at position 2:");
-            System.out.println(trainConsist);
+            System.out.println("Final Train Formation:");
+            System.out.println(formation);
             System.out.println();
 
-            trainConsist.remove(0);  // remove first
-            trainConsist.remove(trainConsist.size() - 1); // remove last
-
-            System.out.println("After Removing First and Last Bogie:");
-            System.out.println(trainConsist);
+            System.out.println("Note:");
+            System.out.println("LinkedHashSet preserves insertion order and removes duplicates automatically.");
             System.out.println();
 
-            System.out.println("UC4 ordered consist operations completed ...");
-
+            System.out.println("UC5 formation setup completed ...");
         }
 }
