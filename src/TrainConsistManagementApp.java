@@ -1,69 +1,82 @@
 import java.util.*;
+import java.util.stream.*;
+
+class Bogie {
+    String name;
+    int capacity;
+
+    // Constructor
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    int getCapacity() {
+        return capacity;
+    }
+
+    String getName() {
+        return name;
+    }
+}
 
 public class TrainConsistManagementApp {
 
-    // Goods Bogie model
-    static class GoodsBogie {
-        String type;
-        String cargo;
-
-        GoodsBogie(String type, String cargo) {
-            this.type = type;
-            this.cargo = cargo;
-        }
-    }
-
     public static void main(String[] args) {
 
-        System.out.println("==============================================");
-        System.out.println(" UC12 - Safety Compliance Check for Goods Bogies ");
-        System.out.println("==============================================\n");
+        // Create bogie dataset
+        List<Bogie> bogies = new ArrayList<>();
 
-        // Create goods bogie list
-        List<GoodsBogie> goodsBogies = new ArrayList<>();
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 60));
+        bogies.add(new Bogie("First Class", 40));
+        bogies.add(new Bogie("Sleeper", 72));
+        bogies.add(new Bogie("AC Chair", 80));
+        bogies.add(new Bogie("First Class", 65));
 
-        // Add bogies
-        goodsBogies.add(new GoodsBogie("Tanker", "Fuel"));
-        goodsBogies.add(new GoodsBogie("Open", "Coal"));
-        goodsBogies.add(new GoodsBogie("Closed", "Food"));
-        goodsBogies.add(new GoodsBogie("Flatbed", "Steel"));
-        goodsBogies.add(new GoodsBogie("Open", "Fuel"));   // Unsafe
-        goodsBogies.add(new GoodsBogie("Closed", "Coal")); // Unsafe
+        // ------------------------------
+        // Loop Based Filtering
+        // ------------------------------
+        long loopStart = System.nanoTime();
 
-        int count = 1;
-
-        for (GoodsBogie bogie : goodsBogies) {
-
-            boolean safe = false;
-
-            // Safety rules
-            if (bogie.cargo.equalsIgnoreCase("Fuel") &&
-                    bogie.type.equalsIgnoreCase("Tanker")) {
-                safe = true;
+        List<Bogie> loopFiltered = new ArrayList<>();
+        for (Bogie b : bogies) {
+            if (b.getCapacity() > 60) {
+                loopFiltered.add(b);
             }
+        }
 
-            else if (bogie.cargo.equalsIgnoreCase("Coal") &&
-                    bogie.type.equalsIgnoreCase("Open")) {
-                safe = true;
-            }
+        long loopEnd = System.nanoTime();
+        long loopTime = loopEnd - loopStart;
 
-            else if (bogie.cargo.equalsIgnoreCase("Food") &&
-                    bogie.type.equalsIgnoreCase("Closed")) {
-                safe = true;
-            }
+        // ------------------------------
+        // Stream Based Filtering
+        // ------------------------------
+        long streamStart = System.nanoTime();
 
-            else if (bogie.cargo.equalsIgnoreCase("Steel") &&
-                    bogie.type.equalsIgnoreCase("Flatbed")) {
-                safe = true;
-            }
+        List<Bogie> streamFiltered = bogies.stream()
+                .filter(b -> b.getCapacity() > 60)
+                .collect(Collectors.toList());
 
-            // Output
-            System.out.println("Bogie " + count +
-                    " | Type: " + bogie.type +
-                    " | Cargo: " + bogie.cargo +
-                    " | Status: " + (safe ? "SAFE ✅" : "NOT SAFE ❌"));
+        long streamEnd = System.nanoTime();
+        long streamTime = streamEnd - streamStart;
 
-            count++;
+        // ------------------------------
+        // Results
+        // ------------------------------
+        System.out.println("Loop Filtered Bogies Count: " + loopFiltered.size());
+        System.out.println("Loop Execution Time: " + loopTime + " ns");
+
+        System.out.println();
+
+        System.out.println("Stream Filtered Bogies Count: " + streamFiltered.size());
+        System.out.println("Stream Execution Time: " + streamTime + " ns");
+
+        // Verify both results are same
+        if (loopFiltered.size() == streamFiltered.size()) {
+            System.out.println("\nResult Check: Both approaches returned the same result.");
+        } else {
+            System.out.println("\nResult Check: Results differ.");
         }
     }
 }
