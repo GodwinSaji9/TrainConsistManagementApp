@@ -28,25 +28,17 @@ public class TrainConsistManagementApp {
         bogieList.add(new Bogie("AC Chair", 56));
         bogieList.add(new Bogie("First Class", 24));
         bogieList.add(new Bogie("Sleeper", 72));
-        bogieList.add(new Bogie("AC Chair", 56));
 
-        System.out.println("All Bogies:");
+        System.out.println("Passenger Bogies in Train:");
         for (Bogie b : bogieList) {
             b.display();
         }
 
-        // Group bogies by type using Stream API
-        Map<String, List<Bogie>> groupedBogies =
-                bogieList.stream()
-                        .collect(Collectors.groupingBy(b -> b.name));
+        // Stream pipeline to calculate total seating capacity
+        int totalSeats = bogieList.stream()
+                .map(b -> b.capacity)        // extract capacity
+                .reduce(0, Integer::sum);    // aggregate capacities
 
-        System.out.println("\nGrouped Bogies by Type:");
-
-        for (Map.Entry<String, List<Bogie>> entry : groupedBogies.entrySet()) {
-            System.out.println("\nBogie Type: " + entry.getKey());
-            for (Bogie b : entry.getValue()) {
-                System.out.println("  Capacity: " + b.capacity);
-            }
-        }
+        System.out.println("\nTotal Seating Capacity of Train: " + totalSeats);
     }
 }
